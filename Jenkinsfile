@@ -83,6 +83,10 @@ pipeline {
             }
 
             steps {
+	    	script {
+        		sh 'echo "JAVA VERSION:"'
+			sh 'java -version'
+    		}
                 withSonarQubeEnv('sonar-pro') {
                     sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=vprofile-repo \
