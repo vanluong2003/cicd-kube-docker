@@ -78,6 +78,8 @@ pipeline {
 
             environment {
                 scannerHome = tool 'mysonarscanner4'
+		JAVA_HOME = tool name: 'jdk11'
+ 		PATH = "${JAVA_HOME}/bin:${env.PATH}"
             }
 
             steps {
