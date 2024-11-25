@@ -1,9 +1,8 @@
 pipeline {
-
     agent any
     tools {
         maven "maven3"
-	jdk "jdk1.8"
+	    jdk "jdk11"
     }
 
     environment {
@@ -48,7 +47,34 @@ pipeline {
             }
         }
 
+        stage('CODE ANALYSIS with SONARQUBE') {
 
+            environment {
+                scannerHome = tool 'mysonarscanner4'
+            }
+            steps {
+                withEnv(["JAVA_HOME=${tool 'jdk11'}", "PATH=${tool 'jdk11'}/bin:${env.PATH}"]) {
+                    script {
+                        sh 'echo "JAVA VERSION:"'
+                        sh 'java -version'
+                    }
+                    withSonarQubeEnv('sonar-pro') {
+                        sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
+                    -Dsonar.projectName=vprofile-repo \
+                    -Dsonar.projectVersion=1.0 \
+                    -Dsonar.sources=src/ \
+                    -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
+                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                    }
+
+                    timeout(time: 10, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }
         stage('Building image') {
             steps{
               script {
@@ -74,14 +100,15 @@ pipeline {
           }
         }
 
+       
+/*
         stage('Kubernetes Deploy') {
-	  agent { label 'KOPS' }
-            steps {
-                    sh "helm upgrade --install --force vproifle-stack helm/vprofilecharts --set appimage=imranvisualpath/vproappdock:9 --namespace test"
-            }
+            agent { label 'KOPS' }
+                steps {
+                        sh "helm upgrade --install --force vproifle-stack helm/vprofilecharts --set appimage=${registry}:${BUILD_NUMBER} --namespace prod"
+                }
         }
-
+*/
     }
-
-
 }
+
