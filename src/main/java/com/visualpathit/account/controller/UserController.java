@@ -37,7 +37,7 @@ public class UserController {
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public final String registration(final Model model) {
         model.addAttribute("userForm", new User());
-             	return "registration";
+             	return "login";
       }
     /** {@inheritDoc} */
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
