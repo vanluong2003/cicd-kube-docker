@@ -103,13 +103,14 @@ pipeline {
             sh "docker rmi $registry:$BUILD_NUMBER"
           }
         }
-       
+       /*
         stage('Kubernetes Deploy') {
             agent { label 'KOPS' }
                 steps {
                     sh "helm upgrade --install --force vproifle-stack helm/vprofilecharts --set appimage=imranvisualpath/vproappdock:9 --namespace test"
                 }
         }
+        */
     }
     post {
         always {
