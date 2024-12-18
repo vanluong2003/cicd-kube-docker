@@ -73,7 +73,7 @@ pipeline {
             sh "docker rmi $registry:$BUILD_NUMBER"
           }
         }
-
+/*
         stage('Kubernetes Deploy') {
 	        agent { label 'KOPS' }
             steps {
@@ -82,6 +82,6 @@ pipeline {
         }
 
     }
-
+*/
 
 }
